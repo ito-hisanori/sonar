@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { Suspense } from "react";
+import React from "react";
 import {
   Sheet,
   SheetClose,
@@ -54,11 +54,9 @@ function Homepage() {
               <SheetTitle></SheetTitle>
             </SheetHeader>
 
-            <Suspense>
-              <div className="flex items-center justify-center h-screen">
-                {formType === "register" ? <RegisterForm /> : <LoginForm />}
-              </div>
-            </Suspense>
+            <div className="flex items-center justify-center h-screen">
+              {formType === "register" ? <RegisterForm /> : <LoginForm />}
+            </div>
           </SheetContent>
         </Sheet>
       )}

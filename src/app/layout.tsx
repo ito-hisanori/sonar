@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Sonar",
@@ -19,10 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-cbscriptallow="true">
-      <body className={`${montserratFont.className} antialiased`}>
-        {children}
-      </body>
-    </html>
+    <Suspense>
+      <html lang="en" data-cbscriptallow="true">
+        <body className={`${montserratFont.className} antialiased`}>
+          {children}
+        </body>
+      </html>
+    </Suspense>
   );
 }
