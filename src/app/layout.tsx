@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-cbscriptallow="true">
       <body className={`${montserratFont.className} antialiased`}>
         {children}
       </body>
