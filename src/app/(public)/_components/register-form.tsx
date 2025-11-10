@@ -15,6 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { registerUser } from "@/server-actions/users";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   first_name: z.string().min(2).max(50),
@@ -24,6 +27,8 @@ const formSchema = z.object({
 });
 
 function RegisterForm() {
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,10 +39,20 @@ function RegisterForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const response = await registerUser(values);
+    setLoading(false);
+    if (response.success) {
+      if (response.message !== undefined) {
+        toast.success(response.message);
+      }
+      router.push("/?formType=login");
+    } else {
+      if (response.message !== undefined) {
+        toast.error(response.message);
+      }
+    }
   }
 
   return (
@@ -113,7 +128,9 @@ function RegisterForm() {
                 Login
               </Link>
             </h1>
-            <Button type="submit">Register</Button>
+            <Button type="submit" disabled={loading}>
+              Register
+            </Button>
           </div>
         </form>
       </Form>
