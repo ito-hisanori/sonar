@@ -6,6 +6,9 @@ import bcrypt from "bcryptjs";
 import { success } from "zod";
 
 export const registerUser = async (payload: Partial<IUser>) => {
+  // initial settings
+  payload.is_intermediate = true;
+
   const { data: existingUser, error: existingUserError } = await supabase
     .from("users")
     .select("*")
