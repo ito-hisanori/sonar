@@ -18,14 +18,14 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const rolesArray = [
-  { value: "notInstructor", label: "Not Instructor" },
-  { value: "instructor", label: "Instructor" },
+  { value: false, label: "Not Instructor" },
+  { value: true, label: "Instructor" },
 ];
 
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(50),
-  role: z.string(),
+  role: z.boolean(),
 });
 
 function LoginForm() {
@@ -34,7 +34,7 @@ function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
-      role: "notInstructor",
+      role: false,
     },
   });
 
