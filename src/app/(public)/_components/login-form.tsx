@@ -18,14 +18,14 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const rolesArray = [
-  { value: "notInstructor", label: "Not Instructor" },
-  { value: "instructor", label: "Instructor" },
+  { value: false, label: "Not Instructor" },
+  { value: true, label: "Instructor" },
 ];
 
 const formSchema = z.object({
   email: z.email(),
   password: z.string().min(8).max(50),
-  role: z.string(),
+  role: z.boolean(),
 });
 
 function LoginForm() {
@@ -34,7 +34,7 @@ function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
-      role: "notInstructor",
+      role: false,
     },
   });
 
@@ -88,15 +88,24 @@ function LoginForm() {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                     className="flex gap-10"
                   >
                     {rolesArray.map((role) => (
-                      <FormItem key={role.value} className="flex items-center">
+                      <FormItem
+                        key={role.value.toString()}
+                        className="flex items-center"
+                      >
                         <FormControl>
-                          <RadioGroupItem value={role.value} id={role.value} />
+                          <RadioGroupItem
+                            value={role.value.toString()}
+                            id={role.value.toString()}
+                          />
                         </FormControl>
-                        <FormLabel htmlFor={role.value} className="ml-2">
+                        <FormLabel
+                          htmlFor={role.value.toString()}
+                          className="ml-2"
+                        >
                           {role.label}
                         </FormLabel>
                         <FormMessage />
