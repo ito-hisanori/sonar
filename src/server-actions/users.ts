@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import { email, success } from "zod";
 import jwt from "jsonwebtoken";
 import { userAgent } from "next/server";
+import { cookies } from "next/headers";
 
 export const registerUser = async (payload: Partial<IUser>) => {
   // initial settings
@@ -68,4 +69,33 @@ export const loginUser = async (payload: Partial<IUser>) => {
   );
 
   return successResponse({ token }, "User logged in successfully.");
+};
+
+export const getLoggedInUser = async () => {
+  const cookieStore = await cookies();
+  const jwtToken = cookieStore.get("jwt_token")?.value;
+
+  const decryptedTokenData: any = jwt.verify(
+    jwtToken!,
+    process.env.JWT_SECRET || ""
+  );
+
+  if (!decryptedTokenData) {
+    return errorResponse("Invalid token");
+  }
+
+  const userId = decryptedTokenData.userId;
+
+  const { data: users, error: userError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", userId);
+
+  if (userError || !users || users.length === 0) {
+    return errorResponse("User not found.");
+  }
+
+  const user = users[0];
+  delete user.password;
+  return successResponse(user, "User fetched successfully.");
 };
