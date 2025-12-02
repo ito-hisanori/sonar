@@ -1,6 +1,7 @@
 "use server";
 
 import supabase from "@/config/supabase-config";
+import { errorResponse, successResponse } from "@/heplers/request-responses";
 import { IUser } from "@/interfaces";
 import bcrypt from "bcryptjs";
 import { success } from "zod";
@@ -15,17 +16,11 @@ export const registerUser = async (payload: Partial<IUser>) => {
     .eq("email", payload.email);
 
   if (existingUserError) {
-    return {
-      success: false,
-      message: existingUserError.message,
-    };
+    return errorResponse(existingUserError.message);
   }
 
   if (existingUser && existingUser.length > 0) {
-    return {
-      success: false,
-      message: "User already exists with this email.",
-    };
+    return errorResponse("User already exists with this email.");
   }
 
   const hashedPassword = await bcrypt.hash(payload.password || "", 10);
@@ -36,14 +31,8 @@ export const registerUser = async (payload: Partial<IUser>) => {
     .insert([payload]);
 
   if (insertError) {
-    return {
-      success: false,
-      Message: insertError.message,
-    };
+    return errorResponse(insertError.message);
   }
 
-  return {
-    success: true,
-    message: "User registered successfully.",
-  };
+  return successResponse(newUser, "User registered successfully.");
 };

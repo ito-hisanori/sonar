@@ -28,3 +28,9 @@ export interface IUser {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface IServerActionResponse {
+  success: boolean;
+  message?: string;
+  data?: any | null;
+}
