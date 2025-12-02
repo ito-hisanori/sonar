@@ -16,6 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useRouter } from "next/navigation";
+import { loginUser } from "@/server-actions/users";
+import toast from "react-hot-toast";
+import Cookie from "js-cookie";
 
 const rolesArray = [
   { value: false, label: "Not Instructor" },
@@ -29,6 +33,8 @@ const formSchema = z.object({
 });
 
 function LoginForm() {
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,10 +44,21 @@ function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const response = await loginUser(values);
+    setLoading(false);
+    if (response.success) {
+      if (response.message !== undefined) {
+        toast.success(response.message);
+        Cookie.set("jwt_token", response.data.token);
+        router.push("/user/dashboard/");
+      }
+    } else {
+      if (response.message !== undefined) {
+        toast.error(response.message);
+      }
+    }
   }
 
   return (
@@ -127,7 +144,9 @@ function LoginForm() {
                 Register
               </Link>
             </h1>
-            <Button type="submit">Login</Button>
+            <Button disabled={loading} type="submit">
+              Login
+            </Button>
           </div>
         </form>
       </Form>

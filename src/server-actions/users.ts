@@ -4,7 +4,9 @@ import supabase from "@/config/supabase-config";
 import { errorResponse, successResponse } from "@/heplers/request-responses";
 import { IUser } from "@/interfaces";
 import bcrypt from "bcryptjs";
-import { success } from "zod";
+import { email, success } from "zod";
+import jwt from "jsonwebtoken";
+import { userAgent } from "next/server";
 
 export const registerUser = async (payload: Partial<IUser>) => {
   // initial settings
@@ -35,4 +37,35 @@ export const registerUser = async (payload: Partial<IUser>) => {
   }
 
   return successResponse(newUser, "User registered successfully.");
+};
+
+export const loginUser = async (payload: Partial<IUser>) => {
+  const { data: existingUsers, error: existingUserError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", payload.email);
+
+  if (existingUserError || !existingUsers || existingUsers.length === 0) {
+    return errorResponse("User with this email does not exist.");
+  }
+
+  const existingUser = existingUsers[0];
+
+  const isPasswordValid = await bcrypt.compare(
+    payload.password || "",
+    existingUser.password || ""
+  );
+  if (!isPasswordValid) {
+    return errorResponse("Invalid password.");
+  }
+
+  // add role permission
+
+  const token = jwt.sign(
+    { userId: existingUser.id },
+    process.env.JWT_SECRET || "",
+    { expiresIn: "1d" }
+  );
+
+  return successResponse({ token }, "User logged in successfully.");
 };
