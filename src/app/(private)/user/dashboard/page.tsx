@@ -1,11 +1,11 @@
 "use client";
 import { getLoggedInUser } from "@/server-actions/users";
-import { IUser } from "@/interfaces";
+import { User } from "@/interfaces";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 
 function UserDashboardPage() {
-  const [user, setUser] = React.useState<IUser | null>(null);
+  const [user, setUser] = React.useState<User | null>(null);
   const fetchData = async () => {
     const response = await getLoggedInUser();
     if (response.success) {

@@ -1,7 +1,7 @@
-import { IServerActionResponse } from "@/interfaces";
+import { ServerActionResponse } from "@/interfaces";
 import { success } from "zod";
 
-export const errorResponse = (message: string): IServerActionResponse => {
+export const errorResponse = (message: string): ServerActionResponse => {
   return {
     success: false,
     message,
@@ -12,7 +12,7 @@ export const errorResponse = (message: string): IServerActionResponse => {
 export const successResponse = (
   data: any,
   message: string
-): IServerActionResponse => {
+): ServerActionResponse => {
   return {
     success: true,
     message,

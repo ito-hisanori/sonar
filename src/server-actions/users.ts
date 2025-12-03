@@ -2,14 +2,14 @@
 
 import supabase from "@/config/supabase-config";
 import { errorResponse, successResponse } from "@/heplers/request-responses";
-import { IUser } from "@/interfaces";
+import { User } from "@/interfaces";
 import bcrypt from "bcryptjs";
 import { email, success } from "zod";
 import jwt from "jsonwebtoken";
 import { userAgent } from "next/server";
 import { cookies } from "next/headers";
 
-export const registerUser = async (payload: Partial<IUser>) => {
+export const registerUser = async (payload: Partial<User>) => {
   // initial settings
   payload.is_intermediate = true;
 
@@ -40,7 +40,7 @@ export const registerUser = async (payload: Partial<IUser>) => {
   return successResponse(newUser, "User registered successfully.");
 };
 
-export const loginUser = async (payload: Partial<IUser>) => {
+export const loginUser = async (payload: Partial<User>) => {
   const { data: existingUsers, error: existingUserError } = await supabase
     .from("users")
     .select("*")
