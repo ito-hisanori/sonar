@@ -1,4 +1,4 @@
-import { IUser } from "@/interfaces";
+import { User } from "@/interfaces";
 import { getLoggedInUser } from "@/server-actions/users";
 import React from "react";
 
@@ -8,7 +8,7 @@ async function AdminDashboardPage() {
     return <div className="p-5">{response.message}</div>;
   }
 
-  const user: IUser = response.data;
+  const user: User = response.data;
   return (
     <div className="p-5 flex flex-col gap-5">
       <h1>Admin Dashboard</h1>

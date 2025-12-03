@@ -1,4 +1,4 @@
-export interface IUser {
+export interface User {
   id: number;
   password: string;
   sex: number;
@@ -29,8 +29,10 @@ export interface IUser {
   updated_at: Date;
 }
 
-export interface IServerActionResponse {
+export interface ServerActionResponse {
   success: boolean;
   message?: string;
   data?: any | null;
 }
+
+export interface Log {}
