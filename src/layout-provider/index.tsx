@@ -8,7 +8,7 @@ function LayoutProvider({ children }: { children: React.ReactNode }) {
   if (pathname.startsWith("/user") /*|| pathname.startsWith("/admin")*/) {
     return <PrivateLayout>{children}</PrivateLayout>;
   }
-  return children;
+  return <div>{children}</div>;
 }
 
 export default LayoutProvider;
