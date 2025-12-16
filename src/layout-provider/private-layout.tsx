@@ -5,6 +5,7 @@ import usersGlobalStore, { UsersGlobalStore } from "@/global-store/users-store";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import Spinner from "@/components/ui/spinner";
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = React.useState(true);
@@ -35,11 +36,7 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+    return <Spinner height="100vh" />;
   }
   return (
     <div>
