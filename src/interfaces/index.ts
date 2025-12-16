@@ -35,4 +35,16 @@ export interface ServerActionResponse {
   data?: any | null;
 }
 
-export interface Log {}
+export interface Record {
+  id: number;
+  user_id: number;
+  buddy_id: number;
+  spot_id: number;
+  event_id: number;
+  rate: number;
+  dived_at: Date;
+  public_range: number;
+  description: string;
+  updated_at: Date;
+  created_at: Date;
+}

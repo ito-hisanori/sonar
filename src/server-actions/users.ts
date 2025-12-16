@@ -1,7 +1,7 @@
 "use server";
 
 import supabase from "@/config/supabase-config";
-import { errorResponse, successResponse } from "@/heplers/request-responses";
+import { errorResponse, successResponse } from "@/helpers/request-responses";
 import { User } from "@/interfaces";
 import bcrypt from "bcryptjs";
 import { email, success } from "zod";
