@@ -44,7 +44,7 @@ function SidebarMenuItems({
     {
       title: "Dive Log",
       icon: <ListChecks size={iconSize} />,
-      path: "/user/divelog",
+      path: "/user/divelogs",
     },
   ];
   // const adminMenuItems = [];
