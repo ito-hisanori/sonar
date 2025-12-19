@@ -42,7 +42,7 @@ export interface Record {
   spot_id: number;
   event_id: number;
   rate: number;
-  dived_at: Date;
+  dived_at: string;
   public_range: number;
   description: string;
   updated_at: Date;
