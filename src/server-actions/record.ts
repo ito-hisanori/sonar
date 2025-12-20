@@ -12,7 +12,7 @@ export const createRecord = async (rcd: Partial<Record>) => {
   return successResponse(null, "Record created successfully");
 };
 
-export const updateRecord = async (id: string, rcd: Partial<Record>) => {
+export const updateRecord = async (id: number, rcd: Partial<Record>) => {
   const { data, error } = await supabase
     .from("records")
     .update(rcd)
@@ -23,7 +23,7 @@ export const updateRecord = async (id: string, rcd: Partial<Record>) => {
   return successResponse(null, "Record updated successfully");
 };
 
-export const getRecord = async (id: string) => {
+export const getRecord = async (id: number) => {
   const { data, error } = await supabase
     .from("records")
     .select("*")
@@ -35,7 +35,7 @@ export const getRecord = async (id: string) => {
   return successResponse(data[0], "Record retrieved successfully");
 };
 
-export const deleteRecord = async (id: string) => {
+export const deleteRecord = async (id: number) => {
   const { data, error } = await supabase.from("records").delete().eq("id", id);
   if (error) {
     return errorResponse(error.message);
@@ -44,7 +44,10 @@ export const deleteRecord = async (id: string) => {
 };
 
 export const getAllRecords = async () => {
-  const { data, error } = await supabase.from("records").select("*");
+  const { data, error } = await supabase
+    .from("records")
+    .select("*")
+    .order("created_at", { ascending: false });
   if (error) {
     return errorResponse(error.message);
   }

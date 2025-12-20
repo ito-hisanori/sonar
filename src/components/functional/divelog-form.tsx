@@ -18,8 +18,10 @@ import { Textarea } from "../ui/textarea";
 import { Editor } from "@tinymce/tinymce-react";
 import toast from "react-hot-toast";
 import { uploadFileAndGetUrl } from "@/helpers/file-uploads";
-import { createRecord } from "@/server-actions/record";
+import { createRecord, updateRecord } from "@/server-actions/record";
 import { useRouter } from "next/navigation";
+import { Record } from "@/interfaces";
+import DivelogFormImage from "./package-form-image";
 
 const formSchema = z.object({
   // user_id: number;
@@ -32,11 +34,16 @@ const formSchema = z.object({
   description: z.string(),
 });
 
-function DivelogForm({ formType }: { formType: "add" | "edit" }) {
+function DivelogForm({
+  formType,
+  divelogData,
+}: {
+  formType: "add" | "edit";
+  divelogData?: Partial<Record>;
+}) {
   const router = useRouter();
-  const [existingImageUrls, setExistingImageUrls] = React.useState<string[]>(
-    []
-  );
+  const [existingImageUrls, setExistingImageUrls] = React.useState<string[]>();
+  // divelogData?.images || []
   const [images, setImages] = React.useState<string[]>([]);
   const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>(
     []
@@ -45,17 +52,17 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      rate: 1,
-      dived_at: Date(),
+      rate: divelogData?.rate || 1,
+      dived_at: divelogData?.dived_at || Date(),
       // public_range: 1,
-      description: "",
+      description: divelogData?.description || "",
     },
   });
 
-  // const handleSelectImageDelete = (index: number) => {
-  //   setImages((prev) => prev.filter((_, i) => i !== index));
-  //   setSelectedImagesFiles((prev) => prev.filter((_, i) => i !== index));
-  // };
+  const handleSelectImageDelete = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setSelectedImagesFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -69,7 +76,7 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
         }
       }
 
-      const imageUrls = [...existingImageUrls, ...newImageUrls];
+      // const imageUrls = [...existingImageUrls, ...newImageUrls];
 
       let response: any = null;
       if (formType === "add") {
@@ -80,6 +87,10 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
           // status: "active",
         });
       } else {
+        response = await updateRecord(divelogData?.id!, {
+          ...values,
+          // images: imageUrls,
+        });
       }
 
       if (response.success) {
@@ -148,7 +159,6 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    {/* <Textarea placeholder="Enter your description" {...field} /> */}
                     <Editor
                       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                       init={{
@@ -209,7 +219,7 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
                           ),
                         uploadcare_public_key: "60f2f47d1090a7016580",
                       }}
-                      initialValue="Enter your description"
+                      initialValue={field.value}
                       value={field.value}
                       onEditorChange={(content) => field.onChange(content)}
                     />
@@ -239,24 +249,25 @@ function DivelogForm({ formType }: { formType: "add" | "edit" }) {
 
           {/* <div className="flex gap-5 mt-5">
             {images.map((image, index) => (
-              <div
+              <DivelogFormImage
                 key={index}
-                className="flex flex-col items-center border p-2 "
-              >
-                <img
-                  src={image}
-                  alt={`Selected ${index}`}
-                  className="w-20 h-20 object-cover rounded-md"
-                />
-                <h1
-                  className="text-sm cursor-pointer  underline mt-2 rounded"
-                  onClick={() => handleSelectImageDelete(index)}
-                >
-                  Delete
-                </h1>
-              </div>
+                image={image}
+                index={index}
+                handleDelete={handleSelectImageDelete}
+              />
             ))}
-          </div> */}
+
+            {existingImageUrls.map((image, index) => (
+              <DivelogFormImage
+                key={index}
+                image={image}
+                index={index}
+                handleDelete={(idx) => {
+                  const newUrls = existingImageUrls.filter((_, i) => i !== idx);
+                }}
+              />
+            ))} */}
+          {/* </div> */}
 
           <div className="flex justify-end gap-5">
             <Button onClick={() => router.back()} variant={"outline"}>
