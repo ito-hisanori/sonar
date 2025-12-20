@@ -4,7 +4,7 @@ import PageTitle from "@/components/ui/page-title";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { Record } from "@/interfaces";
-import { getAllRecords } from "@/server-actions/record";
+import { deleteRecord, getAllRecords } from "@/server-actions/record";
 import {
   Table,
   TableBody,
@@ -20,6 +20,7 @@ import { Edit2, Trash2 } from "lucide-react";
 import router, { useRouter } from "next/navigation";
 import Spinner from "@/components/ui/spinner";
 import InfoMessages from "@/components/ui/info-messages";
+import toast from "react-hot-toast";
 
 function userDivelogPage() {
   const router = useRouter();
@@ -33,6 +34,22 @@ function userDivelogPage() {
       setRecords(response.data);
     } else {
       setRecords([]);
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (id: number) => {
+    setLoading(true);
+    const response = await deleteRecord(id);
+    if (response.success) {
+      setRecords((prev) => prev.filter((rcd) => rcd.id !== id));
+      if (response.message !== undefined) {
+        toast.success(response.message);
+      }
+    } else {
+      if (response.message !== undefined) {
+        toast.error(response.message);
+      }
     }
     setLoading(false);
   };
@@ -99,7 +116,12 @@ function userDivelogPage() {
                     >
                       <Edit2 size={14} />
                     </Button>
-                    <Button size={"icon"} variant={"outline"}>
+                    <Button
+                      size={"icon"}
+                      variant={"outline"}
+                      onClick={() => handleDelete(recordData.id)}
+                      disabled={loading}
+                    >
                       <Trash2 size={14} />
                     </Button>
                   </div>
