@@ -46,5 +46,5 @@ export interface Record {
   public_range: number;
   description: string;
   updated_at: string;
-  created_at: Date;
+  created_at: string;
 }

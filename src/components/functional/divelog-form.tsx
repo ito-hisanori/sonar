@@ -14,14 +14,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import toast from "react-hot-toast";
+import { uploadFileAndGetUrl } from "@/helpers/file-uploads";
 import { createRecord, updateRecord } from "@/server-actions/record";
 import { useRouter } from "next/navigation";
 import { Record, User } from "@/interfaces";
-import DivelogFormImage from "./package-form-image";
+// import DivelogFormImage from "./package-form-image";
 import { getLoggedInUser } from "@/server-actions/users";
 import { getDateTimeFormat } from "@/helpers/date-time-formats";
-import Tiptap from "../ui/tipTap";
+import Tiptap from "@/components/ui/tipTap";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 
@@ -55,18 +57,20 @@ function DivelogForm({
   //   []
   // );
   const [loading, setLoading] = React.useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      rate: divelogData?.rate || 1,
+      rate: divelogData?.rate || 5,
       dived_at:
         getDateTimeFormat(divelogData?.dived_at!) || getDateTimeFormat(Date()),
       // public_range: 1,
       description: divelogData?.description || "",
     },
   });
-  const [user, setUser] = React.useState<User | null>(null);
-  const fetchData = async () => {
+
+  const fetchUser = async () => {
     const response = await getLoggedInUser();
     if (response.success) {
       setUser(response.data);
@@ -78,7 +82,7 @@ function DivelogForm({
   };
 
   useEffect(() => {
-    fetchData();
+    fetchUser();
   }, []);
 
   // const handleSelectImageDelete = (index: number) => {
@@ -105,6 +109,7 @@ function DivelogForm({
         response = await createRecord({
           ...values,
           user_id: user?.id,
+          created_at: getDateTimeFormat(Date()),
           // images: imageUrls,
           // is_active: true,
           // status: "active",
@@ -233,7 +238,11 @@ function DivelogForm({
           {/* </div> */}
 
           <div className="flex justify-end gap-5">
-            <Button onClick={() => router.back()} variant={"outline"}>
+            <Button
+              type="button"
+              onClick={() => router.back()}
+              variant={"outline"}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>

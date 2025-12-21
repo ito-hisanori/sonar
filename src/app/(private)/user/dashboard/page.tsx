@@ -23,14 +23,9 @@ function UserDashboardPage() {
 
   return (
     <div className="p-5 flex flex-col gap-5">
-      <h1>UserDashboardPage</h1>
-
       {user && (
         <>
-          <h1>User Id : {user.id}</h1>
-          <h1>First Name : {user.first_name}</h1>
-          <h1>Family Name : {user.family_name} </h1>
-          <h1>User Email : {user.email}</h1>
+          <h1>This is {user.first_name}'s profile!</h1>
         </>
       )}
     </div>
