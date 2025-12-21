@@ -43,10 +43,11 @@ export const deleteRecord = async (id: number) => {
   return successResponse(null, "Record deleted successfully");
 };
 
-export const getAllRecords = async () => {
+export const getAllRecords = async (user_id: number) => {
   const { data, error } = await supabase
     .from("records")
     .select("*")
+    .eq("user_id", user_id)
     .order("created_at", { ascending: false });
   if (error) {
     return errorResponse(error.message);

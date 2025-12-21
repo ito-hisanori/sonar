@@ -36,11 +36,11 @@ function SidebarMenuItems({
     router.push("/?formType=login");
   };
   const userMenuItems: any = [
-    {
-      title: "Dashboard",
-      icon: <LayoutDashboard size={iconSize} />,
-      path: "/user/dashboard",
-    },
+    // {
+    //   title: "Dashboard",
+    //   icon: <LayoutDashboard size={iconSize} />,
+    //   path: "/user/dashboard",
+    // },
     {
       title: "Dive Log",
       icon: <ListChecks size={iconSize} />,
