@@ -64,7 +64,8 @@ function DivelogForm({
     defaultValues: {
       rate: divelogData?.rate || 5,
       dived_at:
-        getDateTimeFormat(divelogData?.dived_at!) || getDateTimeFormat(Date()),
+        getDateTimeFormat(divelogData?.dived_at!) ||
+        getDateTimeFormat(new Date()),
       // public_range: 1,
       description: divelogData?.description || "",
     },
@@ -109,7 +110,7 @@ function DivelogForm({
         response = await createRecord({
           ...values,
           user_id: user?.id,
-          created_at: getDateTimeFormat(Date()),
+          created_at: getDateTimeFormat(new Date()),
           // images: imageUrls,
           // is_active: true,
           // status: "active",
@@ -118,7 +119,7 @@ function DivelogForm({
         response = await updateRecord(divelogData?.id!, {
           ...values,
           user_id: user?.id,
-          updated_at: getDateTimeFormat(Date()),
+          updated_at: getDateTimeFormat(new Date()),
           // images: imageUrls,
         });
       }
