@@ -8,21 +8,20 @@ import { deleteRecord, getAllRecords } from "@/server-actions/record";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { getDateTimeFormat } from "@/helpers/date-time-formats";
 import { Edit2, Trash2 } from "lucide-react";
-import router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Spinner from "@/components/ui/spinner";
 import InfoMessages from "@/components/ui/info-messages";
 import toast from "react-hot-toast";
 import { User } from "@supabase/supabase-js";
 import { getLoggedInUser } from "@/server-actions/users";
+import { truncateHtml } from "@/helpers/truncate-html";
 
 function userDivelogPage() {
   const router = useRouter();
@@ -79,9 +78,9 @@ function userDivelogPage() {
   }, [user?.id]);
 
   const columns = [
-    "Id",
     "Rate",
     "Dived at",
+    "Description",
     "Created at",
     "Updated at",
     "action",
@@ -90,7 +89,7 @@ function userDivelogPage() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex justify-between items-center">
-        <PageTitle title="divelogs" />
+        <PageTitle title="Divelogs" />
         <Button>
           <Link href="/user/divelogs/add">Add divelog</Link>
         </Button>
@@ -102,7 +101,7 @@ function userDivelogPage() {
         <InfoMessages message="No divelogs found. Please add a divelog." />
       )}
 
-      {!loading && user && records.length > 0 && (
+      {!loading && records.length > 0 && (
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-100">
@@ -116,9 +115,11 @@ function userDivelogPage() {
           <TableBody>
             {records.map((recordData: Record) => (
               <TableRow key={recordData.id}>
-                <TableCell>{recordData.id}</TableCell>
                 <TableCell>{recordData.rate}</TableCell>
                 <TableCell>{getDateTimeFormat(recordData.dived_at)}</TableCell>
+                <TableCell>
+                  {truncateHtml(recordData.description, 10)}
+                </TableCell>
                 <TableCell>
                   {getDateTimeFormat(recordData.created_at)}
                 </TableCell>

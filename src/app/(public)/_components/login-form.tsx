@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -52,7 +51,8 @@ function LoginForm() {
       if (response.message !== undefined) {
         toast.success(response.message);
         Cookie.set("jwt_token", response.data.token);
-        router.push("/user/dashboard/");
+        // router.push("/user/dashboard/");
+        router.push("/user/divelogs/");
       }
     } else {
       if (response.message !== undefined) {
@@ -96,7 +96,7 @@ function LoginForm() {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="role"
             render={({ field }) => (
@@ -133,7 +133,7 @@ function LoginForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <div className="flex justify-between items-center">
             <h1 className="text-sm flex gap-2">
               Don't have an account?{" "}

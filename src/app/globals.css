@@ -196,14 +196,45 @@ table {
   @apply text-gray-500 absolute top-0 left-0;
 }
 
-h1 {
-  @apply text-2xl font-bold;
+/* Tiptapエディターの見出しスタイル */
+.tiptap h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  line-height: 1.2;
 }
 
-h2 {
-  @apply text-xl font-semibold;
+.tiptap h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+  line-height: 1.3;
 }
 
-h3 {
-  @apply text-lg font-medium;
+.tiptap h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 1.4;
+}
+
+.tiptap p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* プレースホルダースタイル */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap:focus {
+  outline: none;
 }
