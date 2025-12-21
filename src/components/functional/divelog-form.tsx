@@ -111,6 +111,7 @@ function DivelogForm({
           ...values,
           user_id: user?.id,
           created_at: getDateTimeFormat(new Date()),
+          updated_at: getDateTimeFormat(new Date()),
           // images: imageUrls,
           // is_active: true,
           // status: "active",
