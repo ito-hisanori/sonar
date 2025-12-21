@@ -21,15 +21,33 @@ import router, { useRouter } from "next/navigation";
 import Spinner from "@/components/ui/spinner";
 import InfoMessages from "@/components/ui/info-messages";
 import toast from "react-hot-toast";
+import { User } from "@supabase/supabase-js";
+import { getLoggedInUser } from "@/server-actions/users";
 
 function userDivelogPage() {
   const router = useRouter();
   const [loading, setLoading] = React.useState(true);
   const [records, setRecords] = React.useState<Record[]>([]);
+  const [user, setUser] = React.useState<User | null>(null);
 
-  const fetchRecords = async () => {
+  const fetchUser = async () => {
+    const response = await getLoggedInUser();
+    if (response.success) {
+      setUser(response.data);
+    } else {
+      if (response.message !== undefined) {
+        toast.error(response.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchRecords = async (user_id: number) => {
     setLoading(true);
-    const response = await getAllRecords();
+    const response = await getAllRecords(user_id);
     if (response.success) {
       setRecords(response.data);
     } else {
@@ -55,8 +73,10 @@ function userDivelogPage() {
   };
 
   useEffect(() => {
-    fetchRecords();
-  }, []);
+    if (user?.id) {
+      fetchRecords(Number(user.id));
+    }
+  }, [user?.id]);
 
   const columns = [
     "Id",
@@ -82,7 +102,7 @@ function userDivelogPage() {
         <InfoMessages message="No divelogs found. Please add a divelog." />
       )}
 
-      {!loading && records.length > 0 && (
+      {!loading && user && records.length > 0 && (
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-100">

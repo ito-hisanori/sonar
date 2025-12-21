@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -14,14 +14,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Editor } from "@tinymce/tinymce-react";
 import toast from "react-hot-toast";
-import { uploadFileAndGetUrl } from "@/helpers/file-uploads";
 import { createRecord, updateRecord } from "@/server-actions/record";
 import { useRouter } from "next/navigation";
-import { Record } from "@/interfaces";
+import { Record, User } from "@/interfaces";
 import DivelogFormImage from "./package-form-image";
+import { getLoggedInUser } from "@/server-actions/users";
+import { getDateTimeFormat } from "@/helpers/date-time-formats";
+import Tiptap from "../ui/tipTap";
+import { Editor } from "@tiptap/core";
+import StarterKit from "@tiptap/starter-kit";
+
+new Editor({
+  extensions: [StarterKit],
+});
 
 const formSchema = z.object({
   // user_id: number;
@@ -42,39 +48,55 @@ function DivelogForm({
   divelogData?: Partial<Record>;
 }) {
   const router = useRouter();
-  const [existingImageUrls, setExistingImageUrls] = React.useState<string[]>();
+  // const [existingImageUrls, setExistingImageUrls] = React.useState<string[]>();
   // divelogData?.images || []
-  const [images, setImages] = React.useState<string[]>([]);
-  const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>(
-    []
-  );
+  // const [images, setImages] = React.useState<string[]>([]);
+  // const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>(
+  //   []
+  // );
   const [loading, setLoading] = React.useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       rate: divelogData?.rate || 1,
-      dived_at: divelogData?.dived_at || Date(),
+      dived_at:
+        getDateTimeFormat(divelogData?.dived_at!) || getDateTimeFormat(Date()),
       // public_range: 1,
       description: divelogData?.description || "",
     },
   });
-
-  const handleSelectImageDelete = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setSelectedImagesFiles((prev) => prev.filter((_, i) => i !== index));
+  const [user, setUser] = React.useState<User | null>(null);
+  const fetchData = async () => {
+    const response = await getLoggedInUser();
+    if (response.success) {
+      setUser(response.data);
+    } else {
+      if (response.message !== undefined) {
+        toast.error(response.message);
+      }
+    }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // const handleSelectImageDelete = (index: number) => {
+  //   setImages((prev) => prev.filter((_, i) => i !== index));
+  //   setSelectedImagesFiles((prev) => prev.filter((_, i) => i !== index));
+  // };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
 
-      let newImageUrls = [];
-      for (const file of selectedImagesFiles) {
-        const response = await uploadFileAndGetUrl(file);
-        if (response.success) {
-          newImageUrls.push(response.data);
-        }
-      }
+      // let newImageUrls = [];
+      // for (const file of selectedImagesFiles) {
+      //   const response = await uploadFileAndGetUrl(file);
+      //   if (response.success) {
+      //     newImageUrls.push(response.data);
+      //   }
+      // }
 
       // const imageUrls = [...existingImageUrls, ...newImageUrls];
 
@@ -82,6 +104,7 @@ function DivelogForm({
       if (formType === "add") {
         response = await createRecord({
           ...values,
+          user_id: user?.id,
           // images: imageUrls,
           // is_active: true,
           // status: "active",
@@ -89,6 +112,8 @@ function DivelogForm({
       } else {
         response = await updateRecord(divelogData?.id!, {
           ...values,
+          user_id: user?.id,
+          updated_at: getDateTimeFormat(Date()),
           // images: imageUrls,
         });
       }
@@ -106,6 +131,7 @@ function DivelogForm({
       setLoading(false);
     }
   }
+
   return (
     <div className="mt-5">
       {" "}
@@ -159,70 +185,7 @@ function DivelogForm({
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Editor
-                      apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                      init={{
-                        plugins: [
-                          // Core editing features
-                          "anchor",
-                          "autolink",
-                          "charmap",
-                          "codesample",
-                          "emoticons",
-                          "link",
-                          "lists",
-                          "media",
-                          "searchreplace",
-                          "table",
-                          "visualblocks",
-                          "wordcount",
-                          // Your account includes a free trial of TinyMCE premium features
-                          // Try the most popular premium features until Jan 1, 2026:
-                          "checklist",
-                          "mediaembed",
-                          "casechange",
-                          "formatpainter",
-                          "pageembed",
-                          "a11ychecker",
-                          "tinymcespellchecker",
-                          "permanentpen",
-                          "powerpaste",
-                          "advtable",
-                          "advcode",
-                          "advtemplate",
-                          "ai",
-                          "uploadcare",
-                          "mentions",
-                          "tinycomments",
-                          "tableofcontents",
-                          "footnotes",
-                          "mergetags",
-                          "autocorrect",
-                          "typography",
-                          "inlinecss",
-                          "markdown",
-                          "importword",
-                          "exportword",
-                          "exportpdf",
-                        ],
-                        toolbar:
-                          "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                        tinycomments_mode: "embedded",
-                        tinycomments_author: "Author name",
-                        mergetags_list: [
-                          { value: "First.Name", title: "First Name" },
-                          { value: "Email", title: "Email" },
-                        ],
-                        ai_request: (request: any, respondWith: any) =>
-                          respondWith.string(() =>
-                            Promise.reject("See docs to implement AI Assistant")
-                          ),
-                        uploadcare_public_key: "60f2f47d1090a7016580",
-                      }}
-                      initialValue={field.value}
-                      value={field.value}
-                      onEditorChange={(content) => field.onChange(content)}
-                    />
+                    <Tiptap value={field.value} onChange={field.onChange} />
                   </FormControl>
                 </FormItem>
               )}

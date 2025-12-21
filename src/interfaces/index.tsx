@@ -45,6 +45,6 @@ export interface Record {
   dived_at: string;
   public_range: number;
   description: string;
-  updated_at: Date;
+  updated_at: string;
   created_at: Date;
 }

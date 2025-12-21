@@ -190,3 +190,20 @@
 table {
   border: 1px solid var(--border);
 }
+
+.is-editor-empty::before {
+  content: attr(data-placeholder);
+  @apply text-gray-500 absolute top-0 left-0;
+}
+
+h1 {
+  @apply text-2xl font-bold;
+}
+
+h2 {
+  @apply text-xl font-semibold;
+}
+
+h3 {
+  @apply text-lg font-medium;
+}
