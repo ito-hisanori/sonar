@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sonar
 
-## Getting Started
+ダイビングを愛する人たちが、ダイビング関連の処理を web 上で一元管理することができます。
 
-First, run the development server:
+## 📌 概要
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+このアプリケーションは、ダイビングに関する体験を一元管理するために開発した Web アプリケーションです。<br>ユーザーは主にダイブログを登録することができ、シームレスなダイビング体験を得ることができます。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎯 開発の背景・目的
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- なぜこのアプリを作ろうと思ったのか
+  <br>ダイブログを通してユーザー間でコミュニケーションを取れるようにしたいと思ったから。
+- どんな課題を解決したかったのか
+  <br>ダイビングを行う際の情報を一元管理したかったから。
+- ターゲットユーザー
+  <br>すでにダイビングを楽しんでいる人やこれからダイビングを始める人。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ 主な機能
 
-## Learn More
+- **機能 1**: サインアップ機能・ユーザー認証・ログイン機能
+- **機能 2**: ダイブログの登録・編集・削除
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ 使用技術
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### フロントエンド
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js 16.0.1
+- React 19.2.0
+- TypeScript 5.9
+- Tailwind CSS 4.1
 
-## Deploy on Vercel
+### UI/UX ライブラリ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Radix UI (Dialog, Label, Select, Radio Group)
+- Lucide React (アイコン)
+- class-variance-authority (スタイル管理)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### フォーム管理・バリデーション
+
+- React Hook Form 7.66.0
+- Zod 4.1.12
+- @hookform/resolvers 5.2.2
+
+### リッチテキストエディタ
+
+- Tiptap 3.14.0 (React 用エディタ)
+
+### バックエンド・データベース
+
+- Supabase (認証・データベース・ストレージ)
+- bcryptjs (パスワードハッシュ化)
+- jsonwebtoken (JWT 認証)
+
+### 状態管理・ユーティリティ
+
+- Zustand 5.0.9 (グローバル状態管理)
+- Day.js 1.11.19 (日時処理)
+- js-cookie 3.0.5 (Cookie 管理)
+- React Hot Toast 2.6.0 (通知 UI)
+
+### 開発環境
+
+- TypeScript 5.9
+- Tailwind CSS 4.1
+- PostCSS
+
+### インフラ・その他
+
+- Vercel (デプロイ)
+
+## 🚀 デモ
+
+実際のアプリケーションは[こちら](https://sonar-five.vercel.app/)からご覧いただけます。
+
+### テストアカウント
+
+- メールアドレス: `dummy@dummy.com`
+- パスワード: `12345678`
+
+---
+
+- メールアドレス: `dummy_2@dummy.com`
+- パスワード: `12345678`
+
+## 👤 作成者
+
+**Ito Hisanori**
+
+---
