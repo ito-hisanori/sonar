@@ -13,6 +13,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { getDateTimeFormat } from "@/helpers/date-time-formats";
 import { Edit2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -28,6 +38,10 @@ function userDivelogPage() {
   const [loading, setLoading] = React.useState(true);
   const [records, setRecords] = React.useState<Record[]>([]);
   const [user, setUser] = React.useState<User | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [recordToDelete, setRecordToDelete] = React.useState<number | null>(
+    null
+  );
 
   const fetchUser = async () => {
     const response = await getLoggedInUser();
@@ -55,11 +69,20 @@ function userDivelogPage() {
     setLoading(false);
   };
 
-  const handleDelete = async (id: number) => {
+  const openDeleteDialog = (id: number) => {
+    setRecordToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (recordToDelete === null) return;
+
     setLoading(true);
-    const response = await deleteRecord(id);
+    setDeleteDialogOpen(false);
+
+    const response = await deleteRecord(recordToDelete);
     if (response.success) {
-      setRecords((prev) => prev.filter((rcd) => rcd.id !== id));
+      setRecords((prev) => prev.filter((rcd) => rcd.id !== recordToDelete));
       if (response.message !== undefined) {
         toast.success(response.message);
       }
@@ -69,6 +92,7 @@ function userDivelogPage() {
       }
     }
     setLoading(false);
+    setRecordToDelete(null);
   };
 
   useEffect(() => {
@@ -118,7 +142,7 @@ function userDivelogPage() {
                 <TableCell>{recordData.rate}</TableCell>
                 <TableCell>{getDateTimeFormat(recordData.dived_at)}</TableCell>
                 <TableCell>
-                  {truncateHtml(recordData.description, 10)}
+                  {truncateHtml(recordData.description, 30)}
                 </TableCell>
                 <TableCell>
                   {getDateTimeFormat(recordData.created_at)}
@@ -140,7 +164,7 @@ function userDivelogPage() {
                     <Button
                       size={"icon"}
                       variant={"outline"}
-                      onClick={() => handleDelete(recordData.id)}
+                      onClick={() => openDeleteDialog(recordData.id)}
                       disabled={loading}
                     >
                       <Trash2 size={14} />
@@ -152,6 +176,23 @@ function userDivelogPage() {
           </TableBody>
         </Table>
       )}
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>本当に削除しますか？</AlertDialogTitle>
+            <AlertDialogDescription>
+              この操作は取り消せません。このダイブログを削除します。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>
+              削除する
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

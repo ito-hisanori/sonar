@@ -26,8 +26,11 @@ const rolesArray = [
 ];
 
 const formSchema = z.object({
-  email: z.email(),
-  password: z.string().min(8).max(50),
+  email: z.email("正しいメールアドレスを入力してください"),
+  password: z
+    .string()
+    .min(8, "パスワードは8文字以上で入力してください")
+    .max(20, "パスワードは20文字以下で入力してください"),
   role: z.boolean(),
 });
 
@@ -90,7 +93,11 @@ function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="your password" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="your password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
