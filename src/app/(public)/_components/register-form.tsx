@@ -21,10 +21,13 @@ import { useRouter } from "next/navigation";
 import { ServerActionResponse } from "@/interfaces";
 
 const formSchema = z.object({
-  first_name: z.string().min(2).max(50),
-  family_name: z.string().min(2).max(50),
-  email: z.email(),
-  password: z.string().min(8).max(50),
+  first_name: z.string().min(1, "名前を入力してください"),
+  family_name: z.string().min(2, "名字を入力してください"),
+  email: z.email("正しいメールアドレスを入力してください"),
+  password: z
+    .string()
+    .min(8, "パスワードは8文字以上で入力してください")
+    .max(20, "パスワードは20文字以下で入力してください"),
 });
 
 function RegisterForm() {
