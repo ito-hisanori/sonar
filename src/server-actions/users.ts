@@ -15,7 +15,7 @@ export const registerUser = async (payload: Partial<User>) => {
 
   const { data: existingUser, error: existingUserError } = await supabase
     .from("users")
-    .select("*")
+    .select("id, password, first_name, family_name, email")
     .eq("email", payload.email);
 
   if (existingUserError) {
@@ -43,7 +43,7 @@ export const registerUser = async (payload: Partial<User>) => {
 export const loginUser = async (payload: Partial<User>) => {
   const { data: existingUsers, error: existingUserError } = await supabase
     .from("users")
-    .select("*")
+    .select("id, password, first_name, family_name, email")
     .eq("email", payload.email);
 
   if (existingUserError || !existingUsers || existingUsers.length === 0) {
@@ -88,7 +88,7 @@ export const getLoggedInUser = async () => {
 
   const { data: users, error: userError } = await supabase
     .from("users")
-    .select("*")
+    .select("id, password, first_name, family_name, email")
     .eq("id", userId);
 
   if (userError || !users || users.length === 0) {

@@ -26,7 +26,7 @@ export const updateRecord = async (id: number, rcd: Partial<Record>) => {
 export const getRecord = async (id: number) => {
   const { data, error } = await supabase
     .from("records")
-    .select("*")
+    .select("id, rate, dived_at, description, updated_at, created_at")
     .eq("id", id);
 
   if (error || !data || data.length === 0) {
@@ -46,7 +46,7 @@ export const deleteRecord = async (id: number) => {
 export const getAllRecords = async (user_id: number) => {
   const { data, error } = await supabase
     .from("records")
-    .select("*")
+    .select("id, rate, dived_at, description, updated_at, created_at")
     .eq("user_id", user_id)
     .order("created_at", { ascending: false });
   if (error) {
