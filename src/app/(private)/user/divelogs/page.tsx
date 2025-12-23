@@ -118,7 +118,7 @@ function userDivelogPage() {
                 <TableCell>{recordData.rate}</TableCell>
                 <TableCell>{getDateTimeFormat(recordData.dived_at)}</TableCell>
                 <TableCell>
-                  {truncateHtml(recordData.description, 10)}
+                  {truncateHtml(recordData.description, 30)}
                 </TableCell>
                 <TableCell>
                   {getDateTimeFormat(recordData.created_at)}
