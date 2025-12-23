@@ -2,7 +2,6 @@ import DivelogForm from "@/components/functional/divelog-form";
 import InfoMessages from "@/components/ui/info-messages";
 import PageTitle from "@/components/ui/page-title";
 import { getRecord } from "@/server-actions/record";
-import React from "react";
 
 interface EditDivelogPageProps {
   params: Promise<{ id: string }>;

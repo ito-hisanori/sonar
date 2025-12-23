@@ -24,7 +24,6 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
     } catch (error) {
       toast.error("Failed to fetch user data");
       Cookies.remove("jwt_token");
-      // Cookies.remove("user_id");
       router.push("/?formType=login");
     } finally {
       setLoading(false);

@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/server-actions/users";
 import toast from "react-hot-toast";
@@ -54,7 +53,6 @@ function LoginForm() {
       if (response.message !== undefined) {
         toast.success(response.message);
         Cookie.set("jwt_token", response.data.token);
-        // router.push("/user/dashboard/");
         router.push("/user/divelogs/");
       }
     } else {
@@ -103,44 +101,6 @@ function LoginForm() {
               </FormItem>
             )}
           />
-          {/* <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Your Role</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value.toString()}
-                    className="flex gap-10"
-                  >
-                    {rolesArray.map((role) => (
-                      <FormItem
-                        key={role.value.toString()}
-                        className="flex items-center"
-                      >
-                        <FormControl>
-                          <RadioGroupItem
-                            value={role.value.toString()}
-                            id={role.value.toString()}
-                          />
-                        </FormControl>
-                        <FormLabel
-                          htmlFor={role.value.toString()}
-                          className="ml-2"
-                        >
-                          {role.label}
-                        </FormLabel>
-                        <FormMessage />
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <div className="flex justify-between items-center">
             <h1 className="text-sm flex gap-2">
               Don't have an account?{" "}

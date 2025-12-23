@@ -7,20 +7,16 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import toast from "react-hot-toast";
-import { uploadFileAndGetUrl } from "@/helpers/file-uploads";
 import { createRecord, updateRecord } from "@/server-actions/record";
 import { useRouter } from "next/navigation";
 import { Record, User } from "@/interfaces";
-// import DivelogFormImage from "./package-form-image";
 import { getLoggedInUser } from "@/server-actions/users";
 import { getDateTimeFormat } from "@/helpers/date-time-formats";
 import Tiptap from "@/components/ui/tipTap";
@@ -32,13 +28,8 @@ new Editor({
 });
 
 const formSchema = z.object({
-  // user_id: number;
-  // buddy_id: number;
-  // spot_id: number;
-  // event_id: number;
   rate: z.int(),
   dived_at: z.string(),
-  // public_range: z.int(),
   description: z.string(),
 });
 
@@ -50,12 +41,6 @@ function DivelogForm({
   divelogData?: Partial<Record>;
 }) {
   const router = useRouter();
-  // const [existingImageUrls, setExistingImageUrls] = React.useState<string[]>();
-  // divelogData?.images || []
-  // const [images, setImages] = React.useState<string[]>([]);
-  // const [selectedImagesFiles, setSelectedImagesFiles] = React.useState<File[]>(
-  //   []
-  // );
   const [loading, setLoading] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
 
@@ -66,7 +51,6 @@ function DivelogForm({
       dived_at:
         getDateTimeFormat(divelogData?.dived_at!) ||
         getDateTimeFormat(new Date()),
-      // public_range: 1,
       description: divelogData?.description || "",
     },
   });
@@ -86,24 +70,9 @@ function DivelogForm({
     fetchUser();
   }, []);
 
-  // const handleSelectImageDelete = (index: number) => {
-  //   setImages((prev) => prev.filter((_, i) => i !== index));
-  //   setSelectedImagesFiles((prev) => prev.filter((_, i) => i !== index));
-  // };
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
-
-      // let newImageUrls = [];
-      // for (const file of selectedImagesFiles) {
-      //   const response = await uploadFileAndGetUrl(file);
-      //   if (response.success) {
-      //     newImageUrls.push(response.data);
-      //   }
-      // }
-
-      // const imageUrls = [...existingImageUrls, ...newImageUrls];
 
       let response: any = null;
       if (formType === "add") {
@@ -112,16 +81,12 @@ function DivelogForm({
           user_id: user?.id,
           created_at: getDateTimeFormat(new Date()),
           updated_at: getDateTimeFormat(new Date()),
-          // images: imageUrls,
-          // is_active: true,
-          // status: "active",
         });
       } else {
         response = await updateRecord(divelogData?.id!, {
           ...values,
           user_id: user?.id,
           updated_at: getDateTimeFormat(new Date()),
-          // images: imageUrls,
         });
       }
 
@@ -198,46 +163,6 @@ function DivelogForm({
               )}
             />
           </div>
-
-          {/* <div>
-            <h1 className="text-sm">select images (Optional)</h1>
-            <Input
-              type="file"
-              multiple
-              accept="image/*"
-              placeholder="Select images"
-              onChange={(e) => {
-                const files = Array.from(e.target.files || []);
-                setSelectedImagesFiles([...selectedImagesFiles, ...files]);
-                const imageUrls = files.map((file) =>
-                  URL.createObjectURL(file)
-                );
-                setImages([...images, ...imageUrls]);
-              }}
-            />
-          </div> */}
-
-          {/* <div className="flex gap-5 mt-5">
-            {images.map((image, index) => (
-              <DivelogFormImage
-                key={index}
-                image={image}
-                index={index}
-                handleDelete={handleSelectImageDelete}
-              />
-            ))}
-
-            {existingImageUrls.map((image, index) => (
-              <DivelogFormImage
-                key={index}
-                image={image}
-                index={index}
-                handleDelete={(idx) => {
-                  const newUrls = existingImageUrls.filter((_, i) => i !== idx);
-                }}
-              />
-            ))} */}
-          {/* </div> */}
 
           <div className="flex justify-end gap-5">
             <Button

@@ -1,6 +1,5 @@
 import DivelogForm from "@/components/functional/divelog-form";
 import PageTitle from "@/components/ui/page-title";
-import React from "react";
 
 function AddDivelog() {
   return (

@@ -1,4 +1,3 @@
-// lib/utils.ts または適切な場所に追加
 export function truncateHtml(html: string, maxLength: number): string {
   // HTMLタグを削除
   const text = html.replace(/<[^>]*>/g, "");

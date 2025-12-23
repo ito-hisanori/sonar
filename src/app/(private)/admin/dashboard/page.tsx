@@ -1,6 +1,5 @@
 import { User } from "@/interfaces";
 import { getLoggedInUser } from "@/server-actions/users";
-import React from "react";
 
 async function AdminDashboardPage() {
   const response = await getLoggedInUser();
