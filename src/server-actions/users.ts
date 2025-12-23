@@ -4,13 +4,10 @@ import supabase from "@/config/supabase-config";
 import { errorResponse, successResponse } from "@/helpers/request-responses";
 import { User } from "@/interfaces";
 import bcrypt from "bcryptjs";
-import { email, success } from "zod";
 import jwt from "jsonwebtoken";
-import { userAgent } from "next/server";
 import { cookies } from "next/headers";
 
 export const registerUser = async (payload: Partial<User>) => {
-  // initial settings
   payload.is_intermediate = true;
 
   const { data: existingUser, error: existingUserError } = await supabase
@@ -59,8 +56,6 @@ export const loginUser = async (payload: Partial<User>) => {
   if (!isPasswordValid) {
     return errorResponse("Invalid password.");
   }
-
-  // add role permission
 
   const token = jwt.sign(
     { userId: existingUser.id },

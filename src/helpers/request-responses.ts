@@ -1,5 +1,4 @@
 import { ServerActionResponse } from "@/interfaces";
-import { success } from "zod";
 
 export const errorResponse = (message: string): ServerActionResponse => {
   return {

@@ -1,16 +1,10 @@
-import React from "react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import { title } from "process";
-import { Icon, LayoutDashboard, ListChecks, LogOut } from "lucide-react";
+import { ListChecks, LogOut } from "lucide-react";
 import usersGlobalStore, { UsersGlobalStore } from "@/global-store/users-store";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -32,24 +26,16 @@ function SidebarMenuItems({
   const logoutHandler = () => {
     toast.success("Logged out successfully");
     Cookies.remove("jwt_token");
-    // Cookies.remove("role");
+
     router.push("/?formType=login");
   };
   const userMenuItems: any = [
-    // {
-    //   title: "Dashboard",
-    //   icon: <LayoutDashboard size={iconSize} />,
-    //   path: "/user/dashboard",
-    // },
     {
       title: "Dive Log",
       icon: <ListChecks size={iconSize} />,
       path: "/user/divelogs",
     },
   ];
-  // const adminMenuItems = [];
-
-  // const menuItems = user?.role === "admin" ? adminMenuItems : userMenuItems;
 
   return (
     <Sheet open={openSidebar} onOpenChange={setOpenSidebar}>
