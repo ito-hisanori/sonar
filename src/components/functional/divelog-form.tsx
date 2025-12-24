@@ -22,158 +22,97 @@ import { getDateTimeFormat } from "@/helpers/date-time-formats";
 import Tiptap from "@/components/ui/tipTap";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
+import { useDivelogForm } from "@/hooks/useDivelogForm";
 
-new Editor({
-  extensions: [StarterKit],
-});
-
-const formSchema = z.object({
-  rate: z.int(),
-  dived_at: z.string(),
-  description: z.string(),
-});
-
-function DivelogForm({
-  formType,
-  divelogData,
-}: {
+interface DivelogFormProps {
   formType: "add" | "edit";
   divelogData?: Partial<Record>;
-}) {
-  const router = useRouter();
-  const [loading, setLoading] = React.useState(false);
-  const [user, setUser] = React.useState<User | null>(null);
+}
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      rate: divelogData?.rate || 5,
-      dived_at:
-        getDateTimeFormat(divelogData?.dived_at!) ||
-        getDateTimeFormat(new Date()),
-      description: divelogData?.description || "",
-    },
-  });
-
-  const fetchUser = async () => {
-    const response = await getLoggedInUser();
-    if (response.success) {
-      setUser(response.data);
-    } else {
-      if (response.message !== undefined) {
-        toast.error(response.message);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setLoading(true);
-
-      let response: any = null;
-      if (formType === "add") {
-        response = await createRecord({
-          ...values,
-          user_id: user?.id,
-          created_at: getDateTimeFormat(new Date()),
-          updated_at: getDateTimeFormat(new Date()),
-        });
-      } else {
-        response = await updateRecord(divelogData?.id!, {
-          ...values,
-          user_id: user?.id,
-          updated_at: getDateTimeFormat(new Date()),
-        });
-      }
-
-      if (response.success) {
-        toast.success("Divelog saved successfully");
-        router.push("/user/divelogs");
-      } else {
-        toast.error(response.message || "Failed to save divelog");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("An error occurred while submitting the form.");
-    } finally {
-      setLoading(false);
-    }
-  }
+function DivelogForm({ formType, divelogData }: DivelogFormProps) {
+  const { form, loading, isEdit, user, onSubmit, handleCancel } =
+    useDivelogForm(formType, divelogData);
 
   return (
     <div className="mt-5">
-      {" "}
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
+        <form onSubmit={onSubmit} className="space-y-6 sm:space-y-8 w-full">
           <FormField
             control={form.control}
             name="rate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Rate</FormLabel>
+                <FormLabel className="text-sm sm:text-base">Rate</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     min={1}
                     max={10}
+                    className="text-sm sm:text-base"
                     {...field}
                     onChange={(e) => {
                       field.onChange(Number(e.target.value));
                     }}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-xs sm:text-sm" />
               </FormItem>
             )}
           />
 
-          <div className="grid lg:grid-cols-3 gap-5">
-            <FormField
-              control={form.control}
-              name="dived_at"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>dived at</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="dived_at"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm sm:text-base">dived at</FormLabel>
+                <FormControl>
+                  <Input
+                    type="datetime-local"
+                    className="text-sm sm:text-base"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs sm:text-sm" />
+              </FormItem>
+            )}
+          />
 
-          <div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Tiptap value={field.value} onChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm sm:text-base">
+                  Description
+                </FormLabel>
+                <FormControl>
+                  <Tiptap value={field.value} onChange={field.onChange} />
+                </FormControl>
+                <FormMessage className="text-xs sm:text-sm" />
+              </FormItem>
+            )}
+          />
 
-          <div className="flex justify-end gap-5">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-5">
             <Button
               type="button"
-              onClick={() => router.back()}
-              variant={"outline"}
+              onClick={handleCancel}
+              variant="outline"
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {formType === "add" ? "Add Divelog" : "Update Divelog"}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
+              {loading
+                ? "Saving..."
+                : isEdit
+                ? "Update Divelog"
+                : "Add Divelog"}
             </Button>
           </div>
         </form>
