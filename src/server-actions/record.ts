@@ -48,7 +48,7 @@ export const getAllRecords = async (user_id: number) => {
     .from("records")
     .select("id, rate, dived_at, description, updated_at, created_at")
     .eq("user_id", user_id)
-    .order("created_at", { ascending: false });
+    .order("updated_at", { ascending: false });
   if (error) {
     return errorResponse(error.message);
   }

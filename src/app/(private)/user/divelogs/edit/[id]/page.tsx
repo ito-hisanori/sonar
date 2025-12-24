@@ -1,23 +1,21 @@
+"use client";
 import DivelogForm from "@/components/functional/divelog-form";
-import InfoMessages from "@/components/ui/info-messages";
 import PageTitle from "@/components/ui/page-title";
-import { getRecord } from "@/server-actions/record";
+import Spinner from "@/components/ui/spinner";
+import { useDivelogEdit } from "@/hooks/useDivelogEdit";
+import { use } from "react";
 
-interface EditDivelogPageProps {
-  params: Promise<{ id: string }>;
-}
+function EditDivelogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { loading, record } = useDivelogEdit(id);
 
-async function EditDivelogPage({ params }: EditDivelogPageProps) {
-  const { id } = await params;
-  const divelogResponse = await getRecord(Number(id));
-  if (!divelogResponse) {
-    return <InfoMessages message="Divelog not found" />;
-  }
-  const divelogData = divelogResponse.data;
+  if (loading) return <Spinner />;
+  if (!record) return <div>Divelog not found</div>;
+
   return (
     <div>
       <PageTitle title="Edit Divelog" />
-      <DivelogForm formType="edit" divelogData={divelogData} />
+      <DivelogForm formType="edit" divelogData={record} />
     </div>
   );
 }
